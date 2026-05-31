@@ -154,6 +154,24 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);min-he
 /* ─── ANIMATIONS ─── */
 .ca{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}
 .ca.visible{opacity:1;transform:translateY(0)}
+/* ─── FORMS & INPUTS ─── */
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--t2);margin-bottom:6px;letter-spacing:.03em;text-transform:uppercase}
+.form-input{width:100%;padding:.75rem 1rem;background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:var(--r3);color:var(--t1);font-family:inherit;font-size:14px;transition:all .2s ease;outline:none}
+.form-input:focus{background:rgba(255,255,255,.05);border-color:var(--p2);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.form-select{width:100%;padding:.75rem 1rem;background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:var(--r3);color:var(--t1);font-family:inherit;font-size:14px;transition:all .2s ease;outline:none;appearance:none;cursor:pointer}
+.form-select:focus{background:rgba(255,255,255,.05);border-color:var(--p2);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.form-select option{background:var(--bg);color:var(--t1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:.75rem 1.5rem;background:linear-gradient(135deg,var(--p),var(--c));color:#fff;border:none;border-radius:var(--r3);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s ease;box-shadow:0 4px 12px rgba(124,58,237,.2)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(124,58,237,.3);filter:brightness(1.1)}
+.btn-sm{padding:.4rem .8rem;font-size:11px;border-radius:4px}
+.mod-grid{display:grid;grid-template-columns:1.2fr 2fr;gap:2rem}
+@media (max-width: 900px) { .mod-grid{grid-template-columns:1fr;} }
+.list-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r3);padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;transition:all .2s ease}
+.list-card:hover{background:var(--s2);border-color:var(--b2);transform:translateX(4px)}
+.list-title{font-size:14px;font-weight:600;margin-bottom:2px}
+.list-sub{font-size:11px;color:var(--t3)}
+.padding-1-5{padding:1.5rem}
 </style>
 </head>
 <body>
@@ -186,14 +204,15 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);min-he
   <header class="header">
     <div>
       <div class="greeting-label">Dashboard</div>
-      <div class="greeting">Good Evening, Hari 👋</div>
+      <div class="greeting" id="greeting-text">Good Evening, Hari 👋</div>
     </div>
     <div class="hdr-right">
-      <div class="hdr-pill"><div class="hdr-dot"></div>Tue, May 26, 2026</div>
+      <div class="hdr-pill"><div class="hdr-dot"></div><span id="current-date">Tue, May 26, 2026</span></div>
       <div class="avatar">H</div>
     </div>
   </header>
-  <section class="section" id="dashboard">
+  <div id="dashboard" class="page">
+  <section class="section">
     <div class="sec-head"><div class="sec-title">Overview</div><a class="sec-link" href="#">View all →</a></div>
     <div class="ov-grid">
       <div class="gc sc accent-red ca">
@@ -279,17 +298,85 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);min-he
       <div class="tl-item"><div class="tl-line-wrap"><div class="tl-dot" style="background:var(--p2);box-shadow:0 0 8px rgba(167,139,250,.7)"></div></div><div class="tl-content"><div class="tl-title">Added Task: tst<span class="tl-badge" style="background:rgba(124,58,237,.15);color:var(--p2);border:1px solid rgba(124,58,237,.3)">Task</span></div><div class="tl-time">5/25/2026 · 10:27:36 PM</div></div></div>
     </div></div>
   </section>
-  <!-- Placeholder sections for other modules -->
-  <section id="expenses" class="page" style="display:none;"><h2 class="sec-title">Expenses</h2><p>Expenses module UI will be implemented here.</p></section>
-  <section id="savings" class="page" style="display:none;"><h2 class="sec-title">Savings</h2><p>Savings module UI will be implemented here.</p></section>
-  <section id="tasks" class="page" style="display:none;"><h2 class="sec-title">Tasks</h2><p>Tasks module UI will be implemented here.</p></section>
-  <section id="learning" class="page" style="display:none;"><h2 class="sec-title">Learning</h2><p>Learning module UI will be implemented here.</p></section>
-  <section id="diary" class="page" style="display:none;"><h2 class="sec-title">Diary</h2><p>Diary module UI will be implemented here.</p></section>
-  <section id="settings" class="page" style="display:none;"><h2 class="sec-title">Settings</h2><p>Settings UI will be implemented here.</p></section>
+  </div> <!-- end dashboard page -->
+  
+  <section id="expenses" class="page" style="display:none;">
+    <div class="sec-head"><div class="sec-title">Expenses</div></div>
+    <div class="mod-grid">
+      <div class="gc padding-1-5" style="align-self: start;">
+        <h3 style="font-size:16px;margin-bottom:1.5rem">Add Expense</h3>
+        <form id="form-expense" onsubmit="submitExpense(event)">
+          <div class="form-group"><label class="form-label">Amount (₹)</label><input type="number" id="exp-amount" class="form-input" placeholder="e.g. 500" required></div>
+          <div class="form-group"><label class="form-label">Category</label><select id="exp-category" class="form-select" required>
+            <option value="1">🍔 Food</option><option value="2">🚕 Transport</option><option value="3">🛒 Groceries</option><option value="4">💡 Utilities</option>
+          </select></div>
+          <div class="form-group"><label class="form-label">Note</label><input type="text" id="exp-note" class="form-input" placeholder="What did you buy?"></div>
+          <button type="submit" class="btn" style="width:100%">Add Expense</button>
+        </form>
+      </div>
+      <div>
+        <h3 style="font-size:16px;margin-bottom:1rem">Recent Expenses</h3>
+        <div id="list-expenses"><div class="list-sub">Loading...</div></div>
+      </div>
+    </div>
+  </section>
+  
+  <section id="tasks" class="page" style="display:none;">
+    <div class="sec-head"><div class="sec-title">Tasks</div></div>
+    <div class="mod-grid">
+      <div class="gc padding-1-5" style="align-self: start;">
+        <h3 style="font-size:16px;margin-bottom:1.5rem">New Task</h3>
+        <form id="form-task" onsubmit="submitTask(event)">
+          <div class="form-group"><label class="form-label">Title</label><input type="text" id="task-title" class="form-input" placeholder="What needs to be done?" required></div>
+          <div class="form-group"><label class="form-label">Priority</label><select id="task-priority" class="form-select"><option>High</option><option selected>Medium</option><option>Low</option></select></div>
+          <button type="submit" class="btn" style="width:100%">Add Task</button>
+        </form>
+      </div>
+      <div>
+        <h3 style="font-size:16px;margin-bottom:1rem">Your Tasks</h3>
+        <div id="list-tasks"><div class="list-sub">Loading...</div></div>
+      </div>
+    </div>
+  </section>
+  
+  <section id="diary" class="page" style="display:none;">
+    <div class="sec-head"><div class="sec-title">Diary</div></div>
+    <div class="mod-grid">
+      <div class="gc padding-1-5" style="align-self: start;">
+        <h3 style="font-size:16px;margin-bottom:1.5rem">New Entry</h3>
+        <form id="form-diary" onsubmit="submitDiary(event)">
+          <div class="form-group"><label class="form-label">Title</label><input type="text" id="diary-title" class="form-input" placeholder="How was your day?" required></div>
+          <div class="form-group"><label class="form-label">Mood</label><select id="diary-mood" class="form-select"><option value="happy">😊 Happy</option><option value="neutral" selected>😐 Neutral</option><option value="sad">😞 Sad</option><option value="excited">🚀 Excited</option><option value="calm">😌 Calm</option><option value="stressed">😤 Stressed</option></select></div>
+          <div class="form-group"><label class="form-label">Thoughts</label><textarea id="diary-thoughts" class="form-input" rows="4" placeholder="Write your thoughts here..."></textarea></div>
+          <button type="submit" class="btn" style="width:100%">Save Entry</button>
+        </form>
+      </div>
+      <div>
+        <h3 style="font-size:16px;margin-bottom:1rem">Recent Entries</h3>
+        <div id="list-diary"><div class="list-sub">Loading...</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="savings" class="page" style="display:none;"><div class="sec-head"><div class="sec-title">Savings</div></div><div class="gc padding-1-5">Savings module coming soon.</div></section>
+  <section id="learning" class="page" style="display:none;"><div class="sec-head"><div class="sec-title">Learning</div></div><div class="gc padding-1-5">Learning module coming soon.</div></section>
+  <section id="settings" class="page" style="display:none;"><div class="sec-head"><div class="sec-title">Settings</div></div><div class="gc padding-1-5">Settings module coming soon.</div></section>
 </main>
 <script>
 const CIRC = 175.93;
 const rings = {'r-expenses':1.0,'r-tasks':0.25,'r-learning':0.20,'r-diary':0.0};
+function updateDateTime() {
+  const now = new Date();
+  const opts = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+  const dEl = document.getElementById('current-date');
+  if(dEl) dEl.textContent = now.toLocaleDateString('en-US', opts);
+  const hour = now.getHours();
+  let g = 'Good Evening';
+  if (hour < 12) g = 'Good Morning';
+  else if (hour < 17) g = 'Good Afternoon';
+  const gEl = document.getElementById('greeting-text');
+  if(gEl) gEl.textContent = `${g}, Hari 👋`;
+}
 async function loadDashboard(){
   try{
     const res = await fetch('/api/dashboard');
@@ -308,23 +395,74 @@ async function loadDashboard(){
   }catch(e){ console.error('Dashboard load error',e); }
 }
 function animate(){
+  updateDateTime();
   document.querySelectorAll('.ca').forEach((el,i)=>{setTimeout(()=>el.classList.add('visible'),80+i*100)});
   setTimeout(()=>{Object.entries(rings).forEach(([id,frac])=>{const el=document.getElementById(id);if(el)el.style.strokeDashoffset=(CIRC*frac).toFixed(2);});},400);
   setTimeout(()=>{document.querySelectorAll('.pb-fill').forEach(el=>{el.style.width=(el.dataset.w||0)+'%';});const savFill=document.getElementById('sav-fill');if(savFill) savFill.style.width=(savFill.dataset.w||0)+'%';},450);
   setTimeout(()=>{document.querySelectorAll('.tl-item').forEach((el,i)=>{setTimeout(()=>el.classList.add('visible'),700+i*150);});},0);
   loadDashboard();
 }
+async function loadExpenses(){
+  try{
+    const res = await fetch('/api/expenses');
+    const d = await res.json();
+    const html = d.map(e => `<div class="list-card"><div><div class="list-title">${e.cat_icon||'💸'} ${e.cat_name||'Expense'} — ₹${e.amount}</div><div class="list-sub">${e.note||'No note'} · ${new Date(e.date).toLocaleDateString()}</div></div></div>`).join('');
+    document.getElementById('list-expenses').innerHTML = html || '<div class="list-sub">No expenses yet.</div>';
+  }catch(e){}
+}
+async function submitExpense(e){
+  e.preventDefault();
+  await fetch('/api/expenses', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({amount:parseFloat(document.getElementById('exp-amount').value), category_id:parseInt(document.getElementById('exp-category').value), note:document.getElementById('exp-note').value}) });
+  e.target.reset(); loadExpenses(); loadDashboard();
+}
+
+async function loadTasks(){
+  try{
+    const res = await fetch('/api/tasks');
+    const d = await res.json();
+    const html = d.map(t => `<div class="list-card" style="opacity:${t.completed?0.5:1}"><div><div class="list-title" style="text-decoration:${t.completed?'line-through':'none'}">${t.title}</div><div class="list-sub">Priority: ${t.priority}</div></div><button class="btn btn-sm" onclick="toggleTask(${t.id})" style="background:var(--bg);border:1px solid var(--b1);color:var(--t1)">${t.completed?'Undo':'Complete'}</button></div>`).join('');
+    document.getElementById('list-tasks').innerHTML = html || '<div class="list-sub">No tasks yet.</div>';
+  }catch(e){}
+}
+async function submitTask(e){
+  e.preventDefault();
+  await fetch('/api/tasks', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:document.getElementById('task-title').value, priority:document.getElementById('task-priority').value}) });
+  e.target.reset(); loadTasks(); loadDashboard();
+}
+async function toggleTask(id){
+  await fetch(`/api/tasks/${id}`, {method:'PUT'}); loadTasks(); loadDashboard();
+}
+
+async function loadDiary(){
+  try{
+    const res = await fetch('/api/diary');
+    const d = await res.json();
+    const emojis = {happy:'😊',sad:'😞',neutral:'😐',excited:'🚀',calm:'😌',stressed:'😤'};
+    const html = d.map(entry => `<div class="list-card" style="flex-direction:column;align-items:flex-start;gap:8px"><div><div class="list-title">${emojis[entry.mood]||'📖'} ${entry.title}</div><div class="list-sub">${new Date(entry.date).toLocaleString()}</div></div><div style="font-size:13px;color:var(--t2)">${entry.thoughts}</div></div>`).join('');
+    document.getElementById('list-diary').innerHTML = html || '<div class="list-sub">No entries yet.</div>';
+  }catch(e){}
+}
+async function submitDiary(e){
+  e.preventDefault();
+  await fetch('/api/diary', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({title:document.getElementById('diary-title').value, mood:document.getElementById('diary-mood').value, thoughts:document.getElementById('diary-thoughts').value}) });
+  e.target.reset(); loadDiary(); loadDashboard();
+}
+
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',animate);}else{requestAnimationFrame(animate);}
 
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click', e=>{
     e.preventDefault();
     const target = item.getAttribute('href').replace('#','');
-    document.querySelectorAll('section.page').forEach(s=>s.style.display='none');
+    document.querySelectorAll('.page').forEach(s=>s.style.display='none');
     const sec = document.getElementById(target);
     if(sec){ sec.style.display='block'; }
     document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
     item.classList.add('active');
+    
+    if(target==='expenses') loadExpenses();
+    if(target==='tasks') loadTasks();
+    if(target==='diary') loadDiary();
   });
   item.addEventListener('mouseenter',()=>{if(!item.classList.contains('active')){item.style.paddingLeft='1.1rem';}});
   item.addEventListener('mouseleave',()=>{if(!item.classList.contains('active')){item.style.paddingLeft='';}});
