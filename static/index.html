@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life OS — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#7c3aed;--p2:#a78bfa;--p3:#c4b5fd;
+  --c:#06b6d4;--c2:#22d3ee;--c3:#67e8f9;
+  --green:#10b981;--green2:#34d399;
+  --red:#f43f5e;--red2:#fb7185;
+  --blue:#3b82f6;--blue2:#60a5fa;
+  --amber:#f59e0b;--amber2:#fbbf24;
+  --bg:#04060d;
+  --s1:rgba(255,255,255,.035);--s2:rgba(255,255,255,.065);--s3:rgba(255,255,255,.09);
+  --b1:rgba(255,255,255,.07);--b2:rgba(255,255,255,.13);--b3:rgba(255,255,255,.2);
+  --t1:#f1f5f9;--t2:#94a3b8;--t3:#475569;--t4:#2d3748;
+  --sw:252px;--r:22px;--r2:16px;--r3:12px
+}
+html,body{height:100%}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;line-height:1.5;overflow:hidden}
+/* ─── MESH BACKGROUND ─── */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 5% 5%,rgba(124,58,237,.15) 0%,transparent 65%),radial-gradient(ellipse 60% 60% at 95% 90%,rgba(6,182,212,.1) 0%,transparent 65%),radial-gradient(ellipse 50% 50% at 80% 5%,rgba(236,72,153,.07) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 30% 80%,rgba(16,185,129,.05) 0%,transparent 50%);animation:meshPulse 18s ease-in-out infinite alternate}
+@keyframes meshPulse{0%{opacity:1}100%{opacity:.75}}
+/* ─── SIDEBAR ─── */
+.sidebar{width:var(--sw);min-height:100vh;flex-shrink:0;background:rgba(255,255,255,.02);backdrop-filter:blur(28px) saturate(180%);border-right:1px solid var(--b1);display:flex;flex-direction:column;padding:1.5rem 1rem 1.25rem;position:relative;z-index:20}
+.logo{display:flex;align-items:center;gap:10px;padding:.5rem .85rem;margin-bottom:2.25rem}
+.logo-mark{width:36px;height:36px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,var(--p),var(--c));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;letter-spacing:-.5px;box-shadow:0 0 24px rgba(124,58,237,.45),inset 0 1px 0 rgba(255,255,255,.2)}
+.logo-text{font-size:19px;font-weight:800;letter-spacing:-.3px;background:linear-gradient(135deg,var(--p2) 20%,var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav{flex:1;display:flex;flex-direction:column;gap:3px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:.68rem .9rem;border-radius:var(--r3);cursor:pointer;color:var(--t2);font-size:14px;font-weight:500;transition:all .22s ease;border:1px solid transparent;text-decoration:none;position:relative;overflow:hidden}
+.nav-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 4px 4px 0;background:linear-gradient(to bottom,var(--p2),var(--c2));transform:scaleX(0);transform-origin:left;transition:transform .2s ease}
+.nav-item:hover{background:var(--s2);color:var(--t1);border-color:var(--b1)}
+.nav-item:hover::before{transform:scaleX(1)}
+.nav-item.active{background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(6,182,212,.08));color:var(--t1);border-color:rgba(124,58,237,.3)}
+.nav-item.active::before{transform:scaleX(1)}
+.ni{width:16px;height:16px;flex-shrink:0;opacity:.55;transition:opacity .2s ease;stroke:currentColor;fill:none}
+.ni.active-icon{color:var(--p2)}
+.nav-div{height:1px;background:var(--b1);margin:.85rem 0}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(124,58,237,.2);color:var(--p2);border:1px solid rgba(124,58,237,.3)}
+/* user card */
+.user-card{display:flex;align-items:center;gap:10px;padding:.75rem .9rem;border-radius:var(--r3);background:var(--s1);border:1px solid var(--b1);margin-top:.75rem;cursor:pointer;transition:all .2s ease}
+.user-card:hover{background:var(--s2);border-color:var(--b2)}
+.user-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--p),var(--c));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.user-name{font-size:13px;font-weight:600;line-height:1.2}
+.user-sub{font-size:11px;color:var(--t3)}
+/* ─── MAIN ─── */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 2rem 3rem;position:relative;z-index:1;scrollbar-width:thin;scrollbar-color:var(--b2) transparent}
+.main::-webkit-scrollbar{width:4px}
+.main::-webkit-scrollbar-track{background:transparent}
+.main::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px}
+/* ─── HEADER ─── */
+.header{display:flex;align-items:center;justify-content:space-between;padding:1.75rem 0 2rem;position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(4,6,13,1) 70%,transparent)}
+.greeting-label{font-size:13px;color:var(--t2);margin-bottom:4px;letter-spacing:.02em}
+.greeting{font-size:24px;font-weight:800;letter-spacing:-.4px;line-height:1}
+.hdr-right{display:flex;align-items:center;gap:.85rem}
+.hdr-pill{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);background:var(--s1);border:1px solid var(--b1);padding:6px 14px;border-radius:100px;transition:all .2s ease}
+.hdr-pill:hover{background:var(--s2);color:var(--t1)}
+.hdr-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:dotPulse 2s ease infinite}
+@keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.4}}
+.avatar{width:40px;height:40px;border-radius:50%;cursor:pointer;background:linear-gradient(135deg,var(--p),var(--c));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;border:2px solid rgba(124,58,237,.5);box-shadow:0 0 0 0 rgba(124,58,237,.3);transition:all .25s ease;animation:avatarPulse 3s ease infinite}
+.avatar:hover{transform:scale(1.08);box-shadow:0 0 22px rgba(124,58,237,.55);border-color:var(--p2)}
+@keyframes avatarPulse{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.25)}60%{box-shadow:0 0 0 6px rgba(124,58,237,0)}}
+/* ─── SECTION ─── */
+.section{margin-bottom:2rem}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.sec-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+.sec-link{font-size:12px;color:var(--p2);text-decoration:none;opacity:.7;transition:opacity .2s ease}
+.sec-link:hover{opacity:1}
+/* ─── GLASS CARD ─── */
+.gc{background:var(--s1);backdrop-filter:blur(24px) saturate(180%);border-radius:var(--r);border:1px solid var(--b1);position:relative;overflow:hidden;transition:all .3s cubic-bezier(.4,0,.2,1)}
+.gc:hover{background:var(--s2);border-color:var(--b2);transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.gc::before{content:'';position:absolute;inset:-1px;border-radius:calc(var(--r) + 1px);background:linear-gradient(135deg,rgba(124,58,237,.6),rgba(6,182,212,.4),rgba(236,72,153,.2),transparent 60%);opacity:0;transition:opacity .35s ease;pointer-events:none;z-index:0}
+.gc:hover::before{opacity:1}
+.gc > *{position:relative;z-index:1}
+.gc.accent-red::after{content:'';position:absolute;top:0;left:1.25rem;right:1.25rem;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,transparent,var(--red2),transparent);opacity:.6}
+.gc.accent-blue::after{content:'';position:absolute;top:0;left:1.25rem;right:1.25rem;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,transparent,var(--blue2),transparent);opacity:.6}
+.gc.accent-green::after{content:'';position:absolute;top:0;left:1.25rem;right:1.25rem;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,transparent,var(--green2),transparent);opacity:.6}
+.gc.accent-amber::after{content:'';position:absolute;top:0;left:1.25rem;right:1.25rem;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,transparent,var(--amber2),transparent);opacity:.6}
+.gc.accent-purple::after{content:'';position:absolute;top:0;left:1.25rem;right:1.25rem;height:2px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,transparent,var(--p2),transparent);opacity:.6}
+/* ─── OVERVIEW GRID ─── */
+.ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.sc{padding:1.3rem 1.25rem 1.1rem}
+.sc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.85rem}
+.sc-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px;margin-bottom:.6rem}
+.sc-label{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--t2);margin-bottom:.3rem}
+.sc-val{font-size:32px;font-weight:800;letter-spacing:-.8px;line-height:1}
+.sc-sub{font-size:11px;color:var(--t3);margin-top:.4rem}
+/* ─── RING ─── */
+.ring-wrap{position:relative;width:64px;height:64px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.05);stroke-width:5}
+.ring-fill{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:175.9;stroke-dashoffset:175.9;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:700;line-height:1.2;text-align:center}
+/* ─── PROGRESS BAR ─── */
+.pb-wrap{margin-top:.9rem}
+.pb-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:6px}
+.pb-track{height:4px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden}
+.pb-fill{height:100%;border-radius:100px;width:0;transition:width 1.3s cubic-bezier(.4,0,.2,1)}
+/* ─── STREAK BADGE ─── */
+.streak{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(245,158,11,.12);color:var(--amber2);border:1px solid rgba(245,158,11,.28)}
+/* ─── ROW 2 ─── */
+.row2{display:grid;grid-template-columns:1.8fr 1fr;gap:1rem}
+/* ─── SAVINGS ─── */
+.sav{padding:1.5rem}
+.sav-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.3rem}
+.sav-label{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--t2);margin-bottom:4px}
+.sav-amount{font-size:30px;font-weight:800;letter-spacing:-.6px;background:linear-gradient(135deg,var(--p2),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sav-right{text-align:right}
+.sav-pct{font-size:22px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(135deg,var(--p2),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sav-pct-label{font-size:11px;color:var(--t3);margin-top:2px}
+.sav-track{height:10px;background:rgba(255,255,255,.05);border-radius:100px;overflow:visible;position:relative;margin-bottom:10px}
+.sav-fill{height:100%;border-radius:100px;width:0;background:linear-gradient(90deg,var(--p),var(--c));position:relative;transition:width 1.5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px rgba(124,58,237,.4)}
+.sav-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:16px;height:16px;background:#fff;border-radius:50%;border:3px solid var(--c2);box-shadow:0 0 14px rgba(6,182,212,.7)}
+.sav-stats{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:1.1rem}
+.milestones{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:.85rem}
+.ms{padding:10px 8px;border-radius:var(--r3);background:rgba(255,255,255,.03);border:1px solid var(--b1);text-align:center;transition:all .2s ease;cursor:default}
+.ms.done{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.06)}
+.ms.current{border-color:rgba(6,182,212,.4);background:rgba(6,182,212,.08);box-shadow:0 0 12px rgba(6,182,212,.15)}
+.ms-icon{font-size:18px;display:block;margin-bottom:4px}
+.ms-label{font-size:10px;font-weight:500;color:var(--t3)}
+.ms.done .ms-label{color:var(--green2)}
+.ms.current .ms-label{color:var(--c2)}
+/* ─── TASKS QUICK ─── */
+.tq{padding:1.5rem}
+.tq-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+.tq-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.tq-count{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:rgba(245,158,11,.12);color:var(--amber2);border:1px solid rgba(245,158,11,.25)}
+.task{display:flex;align-items:center;gap:10px;padding:.55rem 0;border-bottom:1px solid var(--b1);font-size:13px;transition:all .2s ease}
+.task:last-child{border-bottom:none}
+.task:hover{padding-left:4px}
+.tchk{width:18px;height:18px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s ease}
+.tchk.done{border-color:var(--green);background:rgba(16,185,129,.15)}
+.tchk.pend{border-color:var(--t4)}
+.tchk svg{width:9px;height:9px}
+.tdone{text-decoration:line-through;color:var(--t3)}
+.task-pend-badge{margin-left:auto;font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(245,158,11,.1);color:var(--amber2);border:1px solid rgba(245,158,11,.2)}
+/* ─── TIMELINE ─── */
+.act{padding:1.5rem}
+.tl{display:flex;flex-direction:column}
+.tl-item{display:flex;gap:14px;padding:.65rem 0;opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease}
+.tl-item.visible{opacity:1;transform:translateY(0)}
+.tl-line-wrap{display:flex;flex-direction:column;align-items:center;width:12px;flex-shrink:0;padding-top:4px}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:transform .2s ease}
+.tl-item:hover .tl-dot{transform:scale(1.3)}
+.tl-line{flex:1;width:1px;background:var(--b1);min-height:18px;margin-top:4px}
+.tl-content{flex:1;padding-bottom:.4rem}
+.tl-title{font-size:13px;font-weight:500;line-height:1.4;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.tl-time{font-size:11px;color:var(--t3);margin-top:2px}
+/* ─── ANIMATIONS ─── */
+.ca{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}
+.ca.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">⊕</div>
+    <span class="logo-text">Life OS</span>
+  </div>
+  <nav class="nav">
+    <a class="nav-item active" href="#dashboard"><svg class="ni active-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard<span class="nav-badge">4</span></a>
+    <a class="nav-item" href="#expenses"><svg class="ni" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Expenses</a>
+    <a class="nav-item" href="#savings"><svg class="ni" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7c0-1.1-.9-2-2-2H7C5.9 5 5 5.9 5 7v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7z"/><path d="M12 9v6M9 12h6"/></svg>Savings</a>
+    <a class="nav-item" href="#tasks"><svg class="ni" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Tasks</a>
+    <a class="nav-item" href="#learning"><svg class="ni" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Learning</a>
+    <a class="nav-item" href="#diary"><svg class="ni" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Diary</a>
+    <div class="nav-div"></div>
+    <a class="nav-item" href="#settings"><svg class="ni" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82-.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</a>
+  </nav>
+  <div class="user-card">
+    <div class="user-av">H</div>
+    <div>
+      <div class="user-name">Hari</div>
+      <div class="user-sub">Personal Plan</div>
+    </div>
+    <svg style="width:14px;height:14px;margin-left:auto;stroke:var(--t3);fill:none;flex-shrink:0" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+</aside>
+<main class="main">
+  <header class="header">
+    <div>
+      <div class="greeting-label">Dashboard</div>
+      <div class="greeting">Good Evening, Hari 👋</div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-pill"><div class="hdr-dot"></div>Tue, May 26, 2026</div>
+      <div class="avatar">H</div>
+    </div>
+  </header>
+  <section class="section" id="dashboard">
+    <div class="sec-head"><div class="sec-title">Overview</div><a class="sec-link" href="#">View all →</a></div>
+    <div class="ov-grid">
+      <div class="gc sc accent-red ca">
+        <div class="sc-icon" style="background:rgba(244,63,94,.12)">💸</div>
+        <div class="sc-top">
+          <div>
+            <div class="sc-label">Today's Expenses</div>
+            <div class="sc-val" style="color:var(--t1)" id="today-expenses">₹0</div>
+            <div class="sc-sub">Daily budget: ₹500</div>
+          </div>
+          <div class="ring-wrap"><svg viewBox="0 0 72 72" width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="28"/><circle class="ring-fill" id="r-expenses" cx="36" cy="36" r="28" stroke="var(--red2)"/></svg><div class="ring-label" style="color:var(--red2)"><span style="font-size:9px">0%</span><span style="font-size:8px;color:var(--t3)">used</span></div></div>
+        </div>
+        <div class="pb-wrap"><div class="pb-meta"><span>Spent today</span><span>₹0 / ₹500</span></div><div class="pb-track"><div class="pb-fill" data-w="0" style="background:linear-gradient(90deg,var(--red),var(--red2))"></div></div></div>
+      </div>
+      <div class="gc sc accent-blue ca">
+        <div class="sc-icon" style="background:rgba(59,130,246,.12)">✅</div>
+        <div class="sc-top">
+          <div>
+            <div class="sc-label">Tasks Pending</div>
+            <div class="sc-val" style="color:var(--blue2)" id="tasks-pending">1</div>
+            <div class="sc-sub">3 of 4 completed</div>
+          </div>
+          <div class="ring-wrap"><svg viewBox="0 0 72 72" width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="28"/><circle class="ring-fill" id="r-tasks" cx="36" cy="36" r="28" stroke="var(--blue2)"/></svg><div class="ring-label" style="color:var(--blue2)">75%</div></div>
+        </div>
+        <div class="pb-wrap"><div class="pb-meta"><span>Completion rate</span><span>75%</span></div><div class="pb-track"><div class="pb-fill" data-w="75" style="background:linear-gradient(90deg,var(--blue),var(--blue2))"></div></div></div>
+      </div>
+      <div class="gc sc accent-green ca">
+        <div class="sc-icon" style="background:rgba(16,185,129,.12)">📚</div>
+        <div class="sc-top">
+          <div>
+            <div class="sc-label">Learning Progress</div>
+            <div class="sc-val" style="color:var(--green2)">80%</div>
+            <div style="margin-top:.5rem"><span class="streak">🔥 5 days</span></div>
+          </div>
+          <div class="ring-wrap"><svg viewBox="0 0 72 72" width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="28"/><circle class="ring-fill" id="r-learning" cx="36" cy="36" r="28" stroke="var(--green2)"/></svg><div class="ring-label" style="color:var(--green2)">80%</div></div>
+        </div>
+        <div class="pb-wrap"><div class="pb-meta"><span>Course target</span><span>8 / 10 modules</span></div><div class="pb-track"><div class="pb-fill" data-w="80" style="background:linear-gradient(90deg,var(--green),var(--green2))"></div></div></div>
+      </div>
+      <div class="gc sc accent-amber ca">
+        <div class="sc-icon" style="background:rgba(245,158,11,.12)">📓</div>
+        <div class="sc-top">
+          <div>
+            <div class="sc-label">Diary Streak</div>
+            <div class="sc-val" style="color:var(--amber2)">12</div>
+            <div style="margin-top:.5rem"><span class="streak">🔥 12 days</span></div>
+          </div>
+          <div class="ring-wrap"><svg viewBox="0 0 72 72" width="72" height="72"><circle class="ring-bg" cx="36" cy="36" r="28"/><circle class="ring-fill" id="r-diary" cx="36" cy="36" r="28" stroke="var(--amber2)"/></svg><div class="ring-label" style="color:var(--amber2)"><span style="font-size:9px">Today</span><span>✓</span></div></div>
+        </div>
+        <div class="pb-wrap"><div class="pb-meta"><span>This month</span><span>26 / 31 days</span></div><div class="pb-track"><div class="pb-fill" data-w="84" style="background:linear-gradient(90deg,var(--amber),var(--amber2))"></div></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="sec-head"><div class="sec-title">Financial & Tasks</div></div>
+    <div class="row2">
+      <div class="gc sav accent-purple ca">
+        <div class="sav-top"><div><div class="sav-label">Total Saved</div><div class="sav-amount" id="total-saved">₹32,500</div></div><div class="sav-right"><div class="sav-pct">65%</div><div class="sav-pct-label">of annual goal</div></div></div>
+        <div class="sav-track"><div class="sav-fill" id="sav-fill" data-w="65"></div></div>
+        <div class="sav-stats"><span>₹0 start</span><span style="color:var(--c2);font-weight:600">₹32,500 saved</span><span>₹50,000 goal</span></div>
+        <div class="milestones">
+          <div class="ms done"><span class="ms-icon">🎯</span><span class="ms-label">25% done</span></div>
+          <div class="ms done"><span class="ms-icon">⚡</span><span class="ms-label">Halfway!</span></div>
+          <div class="ms current"><span class="ms-icon">🔥</span><span class="ms-label">65% now</span></div>
+          <div class="ms"><span class="ms-icon">🏆</span><span class="ms-label">Goal!</span></div>
+        </div>
+      </div>
+      <div class="gc tq ca">
+        <div class="tq-header"><div class="tq-title">Today's Tasks</div><span class="tq-count">1 pending</span></div>
+        <div>
+          <div class="task"><div class="tchk done"><svg fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 9 9"><path d="M1.5 4.5l2 2 4-4"/></svg></div><span class="tdone">Morning workout</span></div>
+          <div class="task"><div class="tchk done"><svg fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 9 9"><path d="M1.5 4.5l2 2 4-4"/></svg></div><span class="tdone">Read 30 pages</span></div>
+          <div class="task"><div class="tchk done"><svg fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 9 9"><path d="M1.5 4.5l2 2 4-4"/></svg></div><span class="tdone">tst (completed)</span></div>
+          <div class="task"><div class="tchk pend"></div><span>test task</span><span class="task-pend-badge">Pending</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="sec-head"><div class="sec-title">Activity Timeline</div><a class="sec-link" href="#">See all →</a></div>
+    <div class="gc act ca"><div class="tl">
+      <div class="tl-item"><div class="tl-line-wrap"><div class="tl-dot" style="background:var(--p2);box-shadow:0 0 8px rgba(167,139,250,.7)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Added Task: test<span class="tl-badge" style="background:rgba(124,58,237,.15);color:var(--p2);border:1px solid rgba(124,58,237,.3)">Task</span></div><div class="tl-time">5/25/2026 · 10:27:52 PM</div></div></div>
+      <div class="tl-item"><div class="tl-line-wrap"><div class="tl-dot" style="background:var(--green2);box-shadow:0 0 8px rgba(52,211,153,.7)"></div><div class="tl-line"></div></div><div class="tl-content"><div class="tl-title">Completed a task!<span class="tl-badge" style="background:rgba(16,185,129,.12);color:var(--green2);border:1px solid rgba(16,185,129,.3)">Done ✓</span></div><div class="tl-time">5/25/2026 · 10:27:37 PM</div></div></div>
+      <div class="tl-item"><div class="tl-line-wrap"><div class="tl-dot" style="background:var(--p2);box-shadow:0 0 8px rgba(167,139,250,.7)"></div></div><div class="tl-content"><div class="tl-title">Added Task: tst<span class="tl-badge" style="background:rgba(124,58,237,.15);color:var(--p2);border:1px solid rgba(124,58,237,.3)">Task</span></div><div class="tl-time">5/25/2026 · 10:27:36 PM</div></div></div>
+    </div></div>
+  </section>
+  <!-- Placeholder sections for other modules -->
+  <section id="expenses" class="page" style="display:none;"><h2 class="sec-title">Expenses</h2><p>Expenses module UI will be implemented here.</p></section>
+  <section id="savings" class="page" style="display:none;"><h2 class="sec-title">Savings</h2><p>Savings module UI will be implemented here.</p></section>
+  <section id="tasks" class="page" style="display:none;"><h2 class="sec-title">Tasks</h2><p>Tasks module UI will be implemented here.</p></section>
+  <section id="learning" class="page" style="display:none;"><h2 class="sec-title">Learning</h2><p>Learning module UI will be implemented here.</p></section>
+  <section id="diary" class="page" style="display:none;"><h2 class="sec-title">Diary</h2><p>Diary module UI will be implemented here.</p></section>
+  <section id="settings" class="page" style="display:none;"><h2 class="sec-title">Settings</h2><p>Settings UI will be implemented here.</p></section>
+</main>
+<script>
+const CIRC = 175.93;
+const rings = {'r-expenses':1.0,'r-tasks':0.25,'r-learning':0.20,'r-diary':0.0};
+async function loadDashboard(){
+  try{
+    const res = await fetch('/api/dashboard');
+    const d = await res.json();
+    document.getElementById('today-expenses').textContent = `₹${d.today_expenses}`;
+    document.getElementById('tasks-pending').textContent = d.pending_tasks;
+    document.getElementById('total-saved').textContent = `₹${d.total_saved}`;
+    const expPct = d.total_budget? (d.month_expenses / d.total_budget) : 0;
+    const expRing = document.getElementById('r-expenses');
+    if(expRing){ expRing.style.strokeDashoffset = (CIRC*(1-expPct)).toFixed(2); }
+    const savFill = document.getElementById('sav-fill');
+    if(savFill && d.total_target){
+      const savPct = d.total_saved / d.total_target;
+      savFill.style.width = `${savPct*100}%`;
+    }
+  }catch(e){ console.error('Dashboard load error',e); }
+}
+function animate(){
+  document.querySelectorAll('.ca').forEach((el,i)=>{setTimeout(()=>el.classList.add('visible'),80+i*100)});
+  setTimeout(()=>{Object.entries(rings).forEach(([id,frac])=>{const el=document.getElementById(id);if(el)el.style.strokeDashoffset=(CIRC*frac).toFixed(2);});},400);
+  setTimeout(()=>{document.querySelectorAll('.pb-fill').forEach(el=>{el.style.width=(el.dataset.w||0)+'%';});const savFill=document.getElementById('sav-fill');if(savFill) savFill.style.width=(savFill.dataset.w||0)+'%';},450);
+  setTimeout(()=>{document.querySelectorAll('.tl-item').forEach((el,i)=>{setTimeout(()=>el.classList.add('visible'),700+i*150);});},0);
+  loadDashboard();
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',animate);}else{requestAnimationFrame(animate);}
+
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', e=>{
+    e.preventDefault();
+    const target = item.getAttribute('href').replace('#','');
+    document.querySelectorAll('section.page').forEach(s=>s.style.display='none');
+    const sec = document.getElementById(target);
+    if(sec){ sec.style.display='block'; }
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+  item.addEventListener('mouseenter',()=>{if(!item.classList.contains('active')){item.style.paddingLeft='1.1rem';}});
+  item.addEventListener('mouseleave',()=>{if(!item.classList.contains('active')){item.style.paddingLeft='';}});
+});
+</script>
+</body>
+</html>
